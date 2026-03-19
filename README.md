@@ -24,6 +24,22 @@ Una aplicación minimalista de escritorio para que personalices tu Rich Presence
 3. Copia el `Application ID` (esa es tu Client ID) y pégala en esta aplicación.
 
 ## Para desarrolladores y actualizaciones
+Si deseas hacer modificaciones de la interfaz web (Vue), entra a la carpeta `frontend/` y usa el comando `npm install` y `npm run dev`. Alternativamente, utiliza el script `run_dev.bat` incluido en el directorio principal.
+Una vez listo, re-compila ejecutando `build_exe.bat`.
 
-Si deseas hacer modificaciones de la interfaz web (Vue), entra a la carpeta `frontend/` y usa el comando `npm install` y `npm run dev` para observar los cambios.
-Una vez listo, compila con `npm run build` y corre PyInstaller sobre el archivo `backend/main.py`.
+---
+
+## 📜 Historial de Versiones (Changelog)
+
+### v1.1.0 
+- Añadida guía visual para obtener Client ID en pantalla.
+- Panel de historial de versiones (Changelog) emergente.
+- Añadidos logos de Python y Vue y reestructura del footer.
+- Optimización de caché de WebView2 para desarrolladores.
+
+### v1.0.0 
+- Lanzamiento inicial (Release Oficial).
+- Diseño profesional (Glassmorphism oscuro).
+- Soporte para enlaces URL directos (Imágenes principales).
+- Sistema de feedback visual (Toasts).
+- Empaquetamiento automatizado y repositorio online.
