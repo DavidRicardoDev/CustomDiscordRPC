@@ -1,5 +1,13 @@
 <template>
-  <div class="min-h-screen bg-darker flex flex-col items-center py-10">
+  <div class="min-h-screen bg-darker flex flex-col items-center py-10 relative">
+    <Transition name="toast">
+      <div v-if="toast.show" :class="['fixed top-5 left-1/2 -translate-x-1/2 px-6 py-3 rounded shadow-lg font-semibold text-white z-50 flex items-center gap-2 transition-all', toast.type === 'success' ? 'bg-green-500' : 'bg-red-500']">
+        <span v-if="toast.type==='success'">✅</span>
+        <span v-else>❌</span>
+        {{ toast.message }}
+      </div>
+    </Transition>
+
     <div class="max-w-xl w-full bg-darkest p-8 rounded-lg shadow-xl shadow-black/50">
       <h1 class="text-3xl font-bold text-center text-blurple mb-6 flex items-center justify-center gap-3">
         Custom Discord RPC 
@@ -73,6 +81,13 @@ const form = ref({
   client_id: '1483974589141876927'
 })
 
+const toast = ref({ show: false, type: 'success', message: '' })
+
+function showToast(type, msg) {
+  toast.value = { show: true, type, message: msg }
+  setTimeout(() => toast.value.show = false, 3000)
+}
+
 const rpc = ref({
   state: '',
   details: '',
@@ -93,12 +108,13 @@ async function connect() {
     })
     if (res.ok) {
       connected.value = true
+      showToast('success', '¡Conectado a tu cliente de Discord Exitosamente!')
     } else {
       const err = await res.json()
-      alert('Error: ' + err.detail)
+      showToast('error', 'Error: ' + err.detail)
     }
   } catch(e) {
-    alert("Error de red intentando conectar con el servidor local. ¿Está cerrado el programa?")
+    showToast('error', "Error de red al conectar al motor interno. ¿Se cerró el programa?")
   }
 }
 
@@ -110,14 +126,14 @@ async function updateRPC() {
       body: JSON.stringify(rpc.value)
     })
     if (res.ok) {
-      // success flash can be added
+      showToast('success', '¡Estado actualizado con éxito!')
     } else {
       const err = await res.json()
-      alert('Error al actualizar: ' + err.detail)
-      connected.value = false // Could indicate connection lost
+      showToast('error', 'Error al actualizar: ' + err.detail)
+      connected.value = false
     }
   } catch(e) {
-    alert("Error al intentar actualizar el RPC.")
+    showToast('error', "Error al intentar actualizar el RPC.")
   }
 }
 
@@ -152,5 +168,13 @@ onMounted(async () => {
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+.toast-enter-active, .toast-leave-active {
+  transition: all 0.3s ease;
+}
+.toast-enter-from, .toast-leave-to {
+  opacity: 0;
+  transform: translate(-50%, -20px);
 }
 </style>
