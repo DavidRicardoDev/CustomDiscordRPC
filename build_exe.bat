@@ -15,7 +15,7 @@ cd ..
 
 echo.
 echo 2. Empaquetando Python y Recursos...
-.\venv\Scripts\pyinstaller.exe --onefile --noconsole --name "Custom Discord RPC" --add-data "frontend/dist;frontend/dist" backend/main.py
+.\venv\Scripts\pyinstaller.exe --onefile --noconsole --icon="backend/icon.ico" --name "Custom Discord RPC" --add-data "frontend/dist;frontend/dist" --add-data "backend/icon.ico;backend" backend/main.py
 if %ERRORLEVEL% NEQ 0 (
     echo Error durante PyInstaller.
     pause

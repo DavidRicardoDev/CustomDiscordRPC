@@ -6,6 +6,7 @@ from rpc_manager import rpc_manager
 import time
 
 global_start_time = None
+minimize_to_tray_setting = True
 app = FastAPI(title="Discord RPC Customizer API")
 
 app.add_middleware(
@@ -66,4 +67,17 @@ def disconnect_rpc():
 
 @app.get("/api/status")
 def get_status():
-    return {"connected": rpc_manager.connected, "client_id": rpc_manager.client_id}
+    return {
+        "connected": rpc_manager.connected, 
+        "client_id": rpc_manager.client_id,
+        "minimize_to_tray": minimize_to_tray_setting
+    }
+
+class SettingsRequest(BaseModel):
+    minimize_to_tray: bool
+
+@app.post("/api/settings")
+def update_settings(req: SettingsRequest):
+    global minimize_to_tray_setting
+    minimize_to_tray_setting = req.minimize_to_tray
+    return {"status": "ok"}
