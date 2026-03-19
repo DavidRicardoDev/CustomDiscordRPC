@@ -108,12 +108,12 @@
             <div class="lg:col-span-3 space-y-6">
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div class="space-y-1.5">
-                  <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Estado (State)</label>
-                  <input v-model="rpc.state" type="text" class="w-full bg-[#1e1f22] border border-white/5 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-sm text-gray-100 placeholder-gray-600 shadow-inner" placeholder="Ej: Explorando mazmorras...">
+                  <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Detalles (Details)</label>
+                  <input v-model="rpc.details" type="text" class="w-full bg-[#1e1f22] border border-white/5 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-sm text-gray-100 placeholder-gray-600 shadow-inner" placeholder="Ej: Explorando mazmorras...">
                 </div>
                 <div class="space-y-1.5">
-                  <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Detalles (Details)</label>
-                  <input v-model="rpc.details" type="text" class="w-full bg-[#1e1f22] border border-white/5 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-sm text-gray-100 placeholder-gray-600 shadow-inner" placeholder="Ej: Nivel 100">
+                  <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Estado (State)</label>
+                  <input v-model="rpc.state" type="text" class="w-full bg-[#1e1f22] border border-white/5 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-sm text-gray-100 placeholder-gray-600 shadow-inner" placeholder="Ej: Nivel 100">
                 </div>
               </div>
 
@@ -165,7 +165,7 @@
                     
                     <div class="relative shrink-0">
                       <!-- Imagen grande -->
-                      <img v-if="rpc.large_image" :src="rpc.large_image" 
+                      <img v-if="rpc.large_image" :src="rpc.large_image" referrerpolicy="no-referrer"
                            class="w-[84px] h-[84px] rounded-xl object-cover bg-gray-800 shadow shadow-black/50" 
                            @error="$event.target.src='https://placehold.co/100x100/2b2d31/4a4d53?text=?'"/>
                       <div v-else class="w-[84px] h-[84px] rounded-xl bg-[#2b2d31] border border-white/5 flex items-center justify-center">
@@ -173,13 +173,20 @@
                       </div>
                       
                       <!-- Imagen pequeña circular -->
-                      <img v-if="rpc.small_image" :src="rpc.small_image" 
+                      <img v-if="rpc.small_image" :src="rpc.small_image" referrerpolicy="no-referrer"
                            class="w-[30px] h-[30px] rounded-full border-[3px] border-[#111214] absolute -bottom-1 -right-1 bg-gray-800 object-cover" 
                            @error="$event.target.src='https://placehold.co/40x40/2b2d31/4a4d53?text=?'"/>
                     </div>
 
                     <div class="flex-1 flex flex-col justify-start">
-                      <h5 class="text-[15px] font-bold text-white leading-tight mb-1 truncate max-w-[200px] text-indigo-400">[Tú Aplicación ID]</h5>
+                      <div class="relative group cursor-help inline-block w-fit">
+                        <h5 class="text-[15px] font-bold leading-tight mb-1 max-w-[200px] text-indigo-400 flex items-center gap-1">
+                          [Tu Application ID] <span class="text-xs text-gray-500">ⓘ</span>
+                        </h5>
+                        <div class="hidden group-hover:block absolute top-6 left-0 min-w-[220px] max-w-[260px] bg-[#40444b] text-gray-100 text-xs px-3 py-2 rounded shadow-2xl z-50 border border-[#2b2d31] leading-relaxed">
+                          La integración API no puede sobreescribir el nombre central.<br><br>Para cambiar este nombre, debes ir al <strong>Discord Developer Portal</strong> y renombrar tu aplicación padre propiamente.
+                        </div>
+                      </div>
                       <p class="text-[13px] text-gray-300 leading-snug truncate max-w-[200px]">{{ rpc.details || 'Tus detalles aquí...' }}</p>
                       <p class="text-[13px] text-gray-300 leading-snug truncate max-w-[200px]">{{ rpc.state || 'Tu estado aquí...' }}</p>
                       <p class="text-[12px] text-gray-400 mt-1.5 font-medium tracking-wide flex items-center gap-1">
