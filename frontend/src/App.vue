@@ -29,9 +29,8 @@
             <div class="mt-6 rounded-lg bg-[#1e1f22] p-4 text-center border border-dashed border-gray-600">
               <span class="text-gray-500 text-xs uppercase tracking-widest font-bold block mb-2">[Captura de guía]</span>
               <div class="w-full relative aspect-video bg-gray-800 rounded flex flex-col items-center justify-center text-gray-500 text-sm overflow-hidden">
-                <!-- Se mostrará la imagen real si el usuario coloca 'guide.png' en su frontend/src/assets/ -->
-                <img src="https://placehold.co/600x400/1e1f22/4a4d53?text=Espacio+Reservado" class="absolute inset-0 w-full h-full object-cover opacity-80" @error="$event.target.style.display='none'" />
-                <span class="z-10 bg-black/80 px-2 py-1 rounded text-xs">Pega tu propia imagen de la guía aquí:<br><code>frontend/src/assets/guide.png</code></span>
+                <!-- Se mostrará la imagen real porque el usuario ya colocó 'guide.png' en frontend/src/assets/ -->
+                <img src="./assets/guide.png" class="absolute inset-0 w-full h-full object-cover" @error="$event.target.style.display='none'" />
               </div>
             </div>
           </div>
@@ -166,6 +165,7 @@
                     <div class="relative shrink-0">
                       <!-- Imagen grande -->
                       <img v-if="rpc.large_image" :src="rpc.large_image" referrerpolicy="no-referrer"
+                           :title="rpc.large_text || ''"
                            class="w-[84px] h-[84px] rounded-xl object-cover bg-gray-800 shadow shadow-black/50" 
                            @error="$event.target.src='https://placehold.co/100x100/2b2d31/4a4d53?text=?'"/>
                       <div v-else class="w-[84px] h-[84px] rounded-xl bg-[#2b2d31] border border-white/5 flex items-center justify-center">
@@ -174,6 +174,7 @@
                       
                       <!-- Imagen pequeña circular -->
                       <img v-if="rpc.small_image" :src="rpc.small_image" referrerpolicy="no-referrer"
+                           :title="rpc.small_text || ''"
                            class="w-[30px] h-[30px] rounded-full border-[3px] border-[#111214] absolute -bottom-1 -right-1 bg-gray-800 object-cover" 
                            @error="$event.target.src='https://placehold.co/40x40/2b2d31/4a4d53?text=?'"/>
                     </div>
