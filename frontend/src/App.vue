@@ -20,18 +20,18 @@
           <div v-if="showGuideModal" class="p-8">
             <h2 class="text-2xl font-bold text-white mb-4">¿Dónde obtener tu Client ID?</h2>
             <ol class="list-decimal list-outside ml-4 space-y-4 text-sm text-gray-300">
-              <li>Ingresa al <a href="#" class="text-blue-400 hover:underline">Discord Developer Portal</a> en tu navegador.</li>
-              <li>Inicia sesión con tu cuenta de Discord.</li>
-              <li>Haz clic en el botón azul superior derecho <strong>"New Application"</strong>.</li>
-              <li>Ponle el nombre que quieras a tu aplicación (Ese nombre será el que aparecerá luego del "Jugando a..." en tu perfil).</li>
-              <li>Copia el <strong>APPLICATION ID</strong> (una larga fila de números).</li>
+              <li>Ingresa al <a href="https://discord.com/developers/applications" target="_blank" class="text-blue-400 hover:underline">Discord Developer Portal</a> en tu navegador.</li>
+              <li>Haz clic en el botón azul <strong>"New Application"</strong>.</li>
+              <li>Ponle el nombre que quieras a tu aplicación (Ese nombre será el que aparecerá luego del "Jugando a..." en tu perfil y <strong>sólo se puede cambiar ahí</strong>).</li>
+              <li>Copia el <strong>APPLICATION ID</strong> (Client ID).</li>
               <li>Pega esos números en esta aplicación. ¡Listo!</li>
             </ol>
             <div class="mt-6 rounded-lg bg-[#1e1f22] p-4 text-center border border-dashed border-gray-600">
-              <span class="text-gray-500 text-xs uppercase tracking-widest font-bold block mb-2">[Espacio para imagen]</span>
-              <div class="w-full aspect-video bg-gray-800 rounded flex flex-col items-center justify-center text-gray-500 text-sm">
-                <span>Tu captura de pantalla irá aquí en el futuro</span>
-                <span class="text-xs mt-1 opacity-50">(Puedes reemplazarla en el código código fuente si deseas)</span>
+              <span class="text-gray-500 text-xs uppercase tracking-widest font-bold block mb-2">[Captura de guía]</span>
+              <div class="w-full relative aspect-video bg-gray-800 rounded flex flex-col items-center justify-center text-gray-500 text-sm overflow-hidden">
+                <!-- Se mostrará la imagen real si el usuario coloca 'guide.png' en su frontend/src/assets/ -->
+                <img src="https://placehold.co/600x400/1e1f22/4a4d53?text=Espacio+Reservado" class="absolute inset-0 w-full h-full object-cover opacity-80" @error="$event.target.style.display='none'" />
+                <span class="z-10 bg-black/80 px-2 py-1 rounded text-xs">Pega tu propia imagen de la guía aquí:<br><code>frontend/src/assets/guide.png</code></span>
               </div>
             </div>
           </div>
@@ -54,7 +54,7 @@
             <div class="mt-8 bg-blue-500/10 border border-blue-500/20 rounded-xl p-4 flex gap-3 items-start">
               <span class="text-xl">💡</span>
               <p class="text-xs text-blue-200 leading-relaxed pt-1">
-                <strong>Actualizaciones:</strong> Por ahora, la aplicación debe descargarse manual desde GitHub para actualizar. En el futuro, instalaremos un avisador automático que revisará las "Releases" en tiempo real al conectarse.
+                <strong>Actualizaciones:</strong> Por ahora, la aplicación debe descargarse manual desde GitHub para actualizar.
               </p>
             </div>
           </div>
@@ -63,7 +63,7 @@
       </div>
     </Transition>
 
-    <div class="max-w-2xl w-full bg-[#2b2d31]/80 backdrop-blur-xl border border-white/10 p-8 sm:p-10 rounded-3xl shadow-2xl relative overflow-hidden mt-4">
+    <div class="max-w-5xl w-full bg-[#2b2d31]/80 backdrop-blur-xl border border-white/10 p-8 sm:p-10 rounded-3xl shadow-2xl relative overflow-hidden mt-4">
       <div class="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 rounded-full bg-indigo-500/20 blur-3xl pointer-events-none"></div>
       <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-64 h-64 rounded-full bg-blue-500/10 blur-3xl pointer-events-none"></div>
 
@@ -87,65 +87,117 @@
           </button>
         </div>
 
-        <div v-else class="space-y-8 animate-fade-in mt-4">
+        <div v-else class="animate-fade-in mt-4">
           
-          <div class="flex flex-col sm:flex-row justify-between items-center bg-[#1e1f22]/80 border border-white/5 p-4 rounded-2xl gap-4">
+          <div class="flex flex-col sm:flex-row justify-between items-center bg-[#1e1f22]/80 border border-white/5 p-4 rounded-2xl gap-4 mb-6">
             <div class="flex items-center gap-3">
               <span class="relative flex h-3 w-3">
                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
               </span>
-              <span class="font-medium text-emerald-400">Enlazado a Discord</span>
+              <span class="font-medium text-emerald-400">Enlazado a Discord Exitosamente</span>
             </div>
             <button @click="disconnect" class="text-rose-400 hover:text-rose-300 text-sm font-semibold transition-colors bg-rose-500/10 hover:bg-rose-500/20 px-4 py-2 rounded-lg">
               Desconectar
             </button>
           </div>
 
-          <div class="space-y-6">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              <div class="space-y-1.5">
-                <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Estado (State)</label>
-                <input v-model="rpc.state" type="text" class="w-full bg-[#1e1f22] border border-white/5 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-sm text-gray-100 placeholder-gray-600 shadow-inner" placeholder="Ej: Explorando mazmorras...">
+          <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+            
+            <!-- FORMULARIO IZQUIERDA -->
+            <div class="lg:col-span-3 space-y-6">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div class="space-y-1.5">
+                  <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Estado (State)</label>
+                  <input v-model="rpc.state" type="text" class="w-full bg-[#1e1f22] border border-white/5 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-sm text-gray-100 placeholder-gray-600 shadow-inner" placeholder="Ej: Explorando mazmorras...">
+                </div>
+                <div class="space-y-1.5">
+                  <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Detalles (Details)</label>
+                  <input v-model="rpc.details" type="text" class="w-full bg-[#1e1f22] border border-white/5 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-sm text-gray-100 placeholder-gray-600 shadow-inner" placeholder="Ej: Nivel 100">
+                </div>
               </div>
-              <div class="space-y-1.5">
-                <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Detalles (Details)</label>
-                <input v-model="rpc.details" type="text" class="w-full bg-[#1e1f22] border border-white/5 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-sm text-gray-100 placeholder-gray-600 shadow-inner" placeholder="Ej: Nivel 100">
+
+              <div class="bg-[#1e1f22]/50 p-5 rounded-2xl border border-white/5 space-y-4 relative group">
+                <h3 class="text-sm font-bold text-gray-300 border-b border-gray-700/50 pb-2">🖼️ Imagen Principal (Grande)</h3>
+                <!-- Tooltip hover explicativo -->
+                <div class="hidden group-hover:block absolute top-4 right-4 bg-indigo-600 text-xs px-3 py-2 rounded shadow-xl max-w-xs z-20">
+                  ⚠️ El enlace debe terminar en <strong>.png, .jpg o .gif</strong> directamente. No servirá el enlace genérico de un post o sitio web.
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <div class="space-y-1.5">
+                    <label class="block text-xs font-semibold text-gray-400 ml-1">Enlace directo a Imagen</label>
+                    <input v-model="rpc.large_image" type="text" class="w-full bg-[#2b2d31] rounded-lg px-3.5 py-2.5 outline-none focus:ring-2 focus:ring-blue-500 transition-all text-sm text-gray-200 placeholder-gray-600 border border-transparent focus:border-blue-500/50" placeholder="https://i.imgur.com/foto.png">
+                  </div>
+                  <div class="space-y-1.5">
+                    <label class="block text-xs font-semibold text-gray-400 ml-1">Texto al pasar el mouse</label>
+                    <input v-model="rpc.large_text" type="text" class="w-full bg-[#2b2d31] rounded-lg px-3.5 py-2.5 outline-none focus:ring-2 focus:ring-blue-500 transition-all text-sm text-gray-200 placeholder-gray-600 border border-transparent focus:border-blue-500/50" placeholder="Logo de mi servidor">
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-[#1e1f22]/50 p-5 rounded-2xl border border-white/5 space-y-4 relative group">
+                <h3 class="text-sm font-bold text-gray-300 border-b border-gray-700/50 pb-2">⭐ Imagen Secundaria (Pequeña)</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <div class="space-y-1.5">
+                    <label class="block text-xs font-semibold text-gray-400 ml-1">Enlace directo a Imagen</label>
+                    <input v-model="rpc.small_image" type="text" class="w-full bg-[#2b2d31] rounded-lg px-3.5 py-2.5 outline-none focus:ring-2 focus:ring-blue-500 transition-all text-sm text-gray-200 placeholder-gray-600 border border-transparent focus:border-blue-500/50" placeholder="https://i.imgur.com/icono.gif">
+                  </div>
+                  <div class="space-y-1.5">
+                    <label class="block text-xs font-semibold text-gray-400 ml-1">Texto al pasar el mouse</label>
+                    <input v-model="rpc.small_text" type="text" class="w-full bg-[#2b2d31] rounded-lg px-3.5 py-2.5 outline-none focus:ring-2 focus:ring-blue-500 transition-all text-sm text-gray-200 placeholder-gray-600 border border-transparent focus:border-blue-500/50" placeholder="Rango Administrador">
+                  </div>
+                </div>
+              </div>
+              
+              <button @click="updateRPC" class="w-full bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-400 hover:to-blue-500 active:from-indigo-600 active:to-blue-700 py-4 mt-2 rounded-xl text-white font-extrabold text-lg transition-all transform hover:-translate-y-0.5 shadow-xl hover:shadow-indigo-500/25">
+                🚀 Actualizar Presencia en Discord
+              </button>
+            </div>
+
+            <!-- VISTA PREVIA DERECHA -->
+            <div class="lg:col-span-2">
+              <div class="sticky top-10">
+                <h3 class="text-sm font-bold text-gray-300 uppercase tracking-widest mb-4">👀 Vista Previa en Vivo</h3>
+                
+                <div class="bg-[#111214] p-5 rounded-2xl text-gray-200 font-sans shadow-xl border border-white/10 relative">
+                  <h4 class="text-xs font-extrabold text-gray-500 uppercase tracking-widest mb-4">Jugando a un juego</h4>
+                  <div class="flex gap-4 items-start">
+                    
+                    <div class="relative shrink-0">
+                      <!-- Imagen grande -->
+                      <img v-if="rpc.large_image" :src="rpc.large_image" 
+                           class="w-[84px] h-[84px] rounded-xl object-cover bg-gray-800 shadow shadow-black/50" 
+                           @error="$event.target.src='https://placehold.co/100x100/2b2d31/4a4d53?text=?'"/>
+                      <div v-else class="w-[84px] h-[84px] rounded-xl bg-[#2b2d31] border border-white/5 flex items-center justify-center">
+                        <span class="text-4xl">🎮</span>
+                      </div>
+                      
+                      <!-- Imagen pequeña circular -->
+                      <img v-if="rpc.small_image" :src="rpc.small_image" 
+                           class="w-[30px] h-[30px] rounded-full border-[3px] border-[#111214] absolute -bottom-1 -right-1 bg-gray-800 object-cover" 
+                           @error="$event.target.src='https://placehold.co/40x40/2b2d31/4a4d53?text=?'"/>
+                    </div>
+
+                    <div class="flex-1 flex flex-col justify-start">
+                      <h5 class="text-[15px] font-bold text-white leading-tight mb-1 truncate max-w-[200px] text-indigo-400">[Tú Aplicación ID]</h5>
+                      <p class="text-[13px] text-gray-300 leading-snug truncate max-w-[200px]">{{ rpc.details || 'Tus detalles aquí...' }}</p>
+                      <p class="text-[13px] text-gray-300 leading-snug truncate max-w-[200px]">{{ rpc.state || 'Tu estado aquí...' }}</p>
+                      <p class="text-[12px] text-gray-400 mt-1.5 font-medium tracking-wide flex items-center gap-1">
+                        00:00 transcurrido
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
+                <p class="text-xs text-gray-500 mt-4 text-center leading-relaxed">
+                  Esta vista cargará temporalmente las imágenes para que aprecies si tu enlace URL funciona realmente. <br><br>
+                  <em>Si la imagen carga aquí como un (?), significa que el URL está corrupto o carece de la extensión de archivo puro (.gif/.png).</em>
+                </p>
+
               </div>
             </div>
 
-            <div class="bg-[#1e1f22]/50 p-5 rounded-2xl border border-white/5 space-y-4">
-              <h3 class="text-sm font-bold text-gray-300 border-b border-gray-700/50 pb-2">🖼️ Imagen Principal (Grande)</h3>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div class="space-y-1.5">
-                  <label class="block text-xs font-semibold text-gray-400 ml-1">Enlace a Imagen (URL)</label>
-                  <input v-model="rpc.large_image" type="text" class="w-full bg-[#2b2d31] rounded-lg px-3.5 py-2.5 outline-none focus:ring-2 focus:ring-blue-500 transition-all text-sm text-gray-200 placeholder-gray-600 border border-transparent focus:border-blue-500/50" placeholder="https://imgur.com/foto.png">
-                </div>
-                <div class="space-y-1.5">
-                  <label class="block text-xs font-semibold text-gray-400 ml-1">Texto al pasar el mouse</label>
-                  <input v-model="rpc.large_text" type="text" class="w-full bg-[#2b2d31] rounded-lg px-3.5 py-2.5 outline-none focus:ring-2 focus:ring-blue-500 transition-all text-sm text-gray-200 placeholder-gray-600 border border-transparent focus:border-blue-500/50" placeholder="Logo de mi servidor">
-                </div>
-              </div>
-            </div>
-
-            <div class="bg-[#1e1f22]/50 p-5 rounded-2xl border border-white/5 space-y-4">
-              <h3 class="text-sm font-bold text-gray-300 border-b border-gray-700/50 pb-2">⭐ Imagen Secundaria (Pequeña)</h3>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div class="space-y-1.5">
-                  <label class="block text-xs font-semibold text-gray-400 ml-1">Enlace a Imagen (URL)</label>
-                  <input v-model="rpc.small_image" type="text" class="w-full bg-[#2b2d31] rounded-lg px-3.5 py-2.5 outline-none focus:ring-2 focus:ring-blue-500 transition-all text-sm text-gray-200 placeholder-gray-600 border border-transparent focus:border-blue-500/50" placeholder="https://imgur.com/icono.gif">
-                </div>
-                <div class="space-y-1.5">
-                  <label class="block text-xs font-semibold text-gray-400 ml-1">Texto al pasar el mouse</label>
-                  <input v-model="rpc.small_text" type="text" class="w-full bg-[#2b2d31] rounded-lg px-3.5 py-2.5 outline-none focus:ring-2 focus:ring-blue-500 transition-all text-sm text-gray-200 placeholder-gray-600 border border-transparent focus:border-blue-500/50" placeholder="Rango Administrador">
-                </div>
-              </div>
-            </div>
           </div>
-
-          <button @click="updateRPC" class="w-full bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-400 hover:to-blue-500 active:from-indigo-600 active:to-blue-700 py-4 rounded-xl text-white font-extrabold text-lg transition-all transform hover:-translate-y-0.5 shadow-xl hover:shadow-indigo-500/25 mt-2">
-            🚀 Actualizar Presencia en Discord
-          </button>
         </div>
       </div>
     </div>
@@ -159,12 +211,10 @@
       <div class="flex items-center gap-2 px-4 py-2 bg-[#2b2d31]/50 border border-white/5 rounded-full shadow-inner mb-3 transition-colors hover:bg-[#2b2d31]/80">
         <span class="text-xs text-gray-500 font-bold uppercase tracking-widest pl-1">Desarrollado con</span>
         
-        <!-- Icono Python -->
         <svg class="h-4 w-4 text-[#3776AB] hover:scale-110 transition-transform" viewBox="0 0 448 512" fill="currentColor">
           <path d="M439.8 200.5c-7.7-30.9-22.3-54.2-53.4-54.2h-40.1v47.4c0 36.8-31.2 67.8-66.8 67.8H172.7c-29.2 0-53.4 25-53.4 54.3v101.8c0 29 25.2 46 53.4 54.3 33.8 9.9 66.3 11.7 106.8 0 26.9-7.8 53.4-23.5 53.4-54.3v-40.7H226.2v-13.6h160.2c31.1 0 42.6-21.7 53.4-54.2 11.2-33.5 10.7-65.7 0-108.6zM286.2 404c11.1 0 20.1 9.1 20.1 20.3 0 11.3-9 20.4-20.1 20.4-11 0-20.1-9.2-20.1-20.4 .1-11.3 9.1-20.3 20.1-20.3zM167.8 248.1h106.8c29.7 0 53.4-25 53.4-54.3V91.9c0-29-24.4-50.7-53.4-55.6-35.8-5.9-74.7-5.6-106.8 .1-45.2 8-53.4 24.7-53.4 55.6v40.7h106.9v13.6h-147c-31.1 0-58.3 18.7-66.8 54.2-9.8 40.7-10.2 66.1 0 108.6 7.6 31.6 25.7 54.2 56.8 54.2H101v-48.8c0-35.3 30.5-66.4 66.8-66.4zm-6.7-142.6c-11.1 0-20.1-9.1-20.1-20.3 .1-11.3 9-20.4 20.1-20.4 11 0 20.1 9.2 20.1 20.4s-9 20.3-20.1 20.3z"/>
         </svg>
-        <span class="text-gray-600 font-bold">&amp;</span>
-        <!-- Icono Vue -->
+        <span class="text-gray-600 font-bold">&</span>
         <svg class="h-4 w-4 text-[#4FC08D] hover:scale-110 transition-transform" viewBox="0 0 448 512" fill="currentColor">
           <path d="M244.6 92.4h119.3L224 332 84.1 92.4H0L224 480 448 92.4H329.4L224 274.5z"/>
         </svg>
@@ -185,10 +235,10 @@ const connected = ref(false)
 const showGuideModal = ref(false)
 const showChangelogModal = ref(false)
 
-const currentVersion = 'v1.1.0'
+const currentVersion = 'v1.2.0'
 const changelog = [
-  { version: 'v1.1.0', date: 'Marzo 2026', changes: ['Añadida vista modal explicativa de "Cómo obtener el Client ID" e instrucciones.', 'Incorporado este mismo panel de "Versiones y Novedades" (Changelog).', 'Agregados los logos y créditos de la pila tecnológica (Python y Vue) al pie de página.', 'Mejoras visuales y corrección de bugs visuales.'] },
-  { version: 'v1.0.0', date: 'Marzo 2026', changes: ['Lanzamiento inicial (Release Oficial).', 'Diseño "Glassmorphism" profesional y en Modo Oscuro.', 'Soporte absoluto para inserción de URLs de imágenes.', 'Motor Python de pywebview y FastAPI optimizado.'] },
+  { version: 'v1.2.0', date: 'Marzo 2026', changes: ['Incrustado Panel Interactivo de "Vista Previa en Vivo". Ahora ves los enlaces funcionando antes de guardar y enviarlos a tu perfil de Discord.', 'Añadidos tooltips/textos flotantes de ayuda indicando cómo extraer Links directos .gif o .png', 'El formulario principal se acopló para incluir la previsualización interactiva a su derecha.'] },
+  { version: 'v1.1.0', date: 'Marzo 2026', changes: ['Añadida vista modal explicativa de "Cómo obtener el Client ID" e instrucciones.', 'Incorporado este mismo panel de "Versiones y Novedades" (Changelog).', 'Agregados los logos y créditos de la pila tecnológica (Python y Vue) al pie de página.', 'Sistema de notificaciones Toast implementado.'] },
 ]
 
 const form = ref({
@@ -270,7 +320,7 @@ onMounted(async () => {
       }
     }
   } catch(e) {
-    //
+    // 
   }
 })
 </script>
