@@ -1,45 +1,58 @@
 # Custom Discord RPC
 
-Una aplicación minimalista de escritorio para que personalices tu Rich Presence de Discord a tu antojo. Hecha con **Python** de fondo y **Vue 3 + Tailwind CSS** de frente.
+Una aplicación minimalista de escritorio para que personalices tu Rich Presence de Discord a tu antojo. Hecha con **Python** de fondo y **Vue 3 + CSS Reactivo** de frente.
+¡100% Código Abierto (Open Source)! Puedes revisar todo el código fuente y clonar el repositorio tú mismo; nuestra aplicación no lee tokens privados ni maneja datos sensibles, únicamente interactúa con tu ID pública de "Discord Developer".
 
-## Características
+## Características de la v1.3.0
 
-- Interfaz moderna en Modo Oscuro.
-- Totalmente fuera de línea. No usa servidores externos; la aplicación aloja una mini-API interna en tu propia computadora.
-- Soporta GIFs e imágenes mediante **URLs** externas. No tienes que subir las imágenes manualmente al Portal de Desarrollador de Discord.
-- Totalmente instalable mediante su propio `Custom Discord RPC.exe`.
+- 🎨 **Theming Personalizado:** Elige el color que desees (RGB/HEX) mediante la paleta superior. El tema y luces cambiarán al instante en toda la aplicación.
+- 📉 **Segundo Plano (System Tray):** Minimiza la app al área del reloj de Windows en lugar de cerrarla.
+- ⏱️ **Tiempo Transcurrido:** Al conectarte, inicia un conteo visible ("00:00 elapsed") en Discord para saber tu tiempo de actividad continuo y real.
+- 🖼️ **Imágenes Livianas y Tooltips:** Visualiza tooltips estilo Discord y mantén la aplicación robusta; sin alojar nada pesadamente, todo mediante URLs externas directas (IMGUR, Discord Attachments, etc.).
 
 ## Cómo usar el programa pre-compilado
 
-1. Entra a la carpeta `dist`.
-2. Dale doble clic al archivo `Custom Discord RPC.exe`. (La primera vez que abra puede demorar un par de segundos mientras extrae los archivos visuales temporalmente).
-3. Asegúrate de tener **Discord abierto y ejecutándose** en tu computadora.
+1. Descarga el archivo de la release o dirígete a la carpeta `dist`.
+2. Dale doble clic al archivo `Custom Discord RPC.exe`.
+   > **⚠️ Nota de Seguridad (Windows Defender / Antivirus):** Como este es un programa compilado y empaquetado por PyInstaller sin un Certificado Digital de paga corporativo, Windows SmartScreen y ciertos antivirus podrían saltar con un **falso positivo** advirtiendo que "se bloqueó una app desconocida". Simplemente presiona **"Más información"** -> **"Ejecutar de todas formas"** (Márcalo como exclusión en otras apps si es necesario). El código de este programa está 100% publicado y a la vista de todos; no hace nada malicioso.
+3. Asegúrate de tener **Discord abierto y ejecutándose en segundo plano**.
 4. Escribe tu Client ID (Application ID) que creaste en el Discord Developer Portal.
-5. Rellena los detalles, el estado y las imágenes con las URLs que más te gusten, y dale a Actualizar RPC.
+5. Rellena los detalles, el estado y las URLs, y presiona "Actualizar Presencia en Discord" 🚀.
 
 ### ¿Cómo obtener el Client ID?
 
 1. Entra a [Discord Developer Portal](https://discord.com/developers/applications).
 2. Haz clic en **New Application** arriba a la derecha. Ponle el nombre que quieras que tus amigos vean debajo de tu estado "Jugando a ...".
-3. Copia el `Application ID` (esa es tu Client ID) y pégala en esta aplicación.
+3. Copia el `Application ID` (esa es tu Client ID) y pégala dentro de este lanzador.
 
-## Para desarrolladores y actualizaciones
-Si deseas hacer modificaciones de la interfaz web (Vue), entra a la carpeta `frontend/` y usa el comando `npm install` y `npm run dev`. Alternativamente, utiliza el script `run_dev.bat` incluido en el directorio principal.
-Una vez listo, re-compila ejecutando `build_exe.bat`.
+## Actualizaciones Futuras
+Como es un programa portable de tipo Ejecutable único (`.exe`), para adquirir o disfrutar de nuevas características de futuras revisiones, simplemente tendrás que volver a descargar la nueva versión desde la pestaña "Releases" de este mismo repositorio GitHub y re-utilizar ese nuevo archivo.
+
+## Para desarrolladores
+Si deseas hacer modificaciones de la interfaz web (Vue) a profundidad:
+1. Clona el repositorio y entra a la carpeta `frontend/`.
+2. Usa el comando `npm install` y posteriormente `npm run dev`. Alternativamente, utiliza el script `run_dev.bat`.
+3. Una vez programado, re-compila el ecosistema global ejecutando el batch automatizado `build_exe.bat`.
 
 ---
 
 ## 📜 Historial de Versiones (Changelog)
 
+### v1.3.0
+- Integración de Theming Dinámico Interactivo (Colores modificables a profundidad por el usuario).
+- Backend minimizable en System Tray nativo de Windows (Bandeja de sistema Pystray).
+- Cronómetro base de Python añadido (Tiempo de Conexión en vivo sumatorio en el Perfil).
+- Spinners de petición de red Asíncronos.
+- Ejecutable `.exe` con el logo propio y oficial de la Custom App.
+
+### v1.2.0
+- Panel "Vista Previa en Vivo" que emula la previsualización nativa del perfil de Discord (Tooltips en Hover).
+- Parche Anti-CORS con `no-referrer` para cargar links bloqueados desde IMGur y otros hostings de terceros.
+
 ### v1.1.0 
-- Añadida guía visual para obtener Client ID en pantalla.
-- Panel de historial de versiones (Changelog) emergente.
-- Añadidos logos de Python y Vue y reestructura del footer.
-- Optimización de caché de WebView2 para desarrolladores.
+- Añadida guía visual de aplicación nativa.
+- Historial de cambios modal y optimizaciones UI menores (Notificaciones Toast).
+- Componente Python `pywebview` sin caché local.
 
 ### v1.0.0 
-- Lanzamiento inicial (Release Oficial).
-- Diseño profesional (Glassmorphism oscuro).
-- Soporte para enlaces URL directos (Imágenes principales).
-- Sistema de feedback visual (Toasts).
-- Empaquetamiento automatizado y repositorio online.
+- Lanzamiento Oficial. Setup de motor local en Python con Webview Vue 3 compilado por Vite.

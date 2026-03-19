@@ -86,7 +86,7 @@
                 ¿Dónde encontrar esto?
               </button>
             </div>
-            <input v-model="form.client_id" type="text" class="w-full bg-[#1e1f22] border border-white/5 rounded-xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-[var(--theme-color)] focus:border-transparent transition-all text-white placeholder-gray-500 shadow-inner" placeholder="Ej: 1483974589141876927">
+            <input v-model="form.client_id" type="text" class="w-full bg-[#1e1f22] border border-white/5 rounded-xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-[var(--theme-color)] focus:border-transparent transition-all text-white placeholder-gray-500 shadow-inner" placeholder="Ej: 123456789012345678">
           </div>
           
           <button @click="connect" :disabled="isLoading" class="w-full bg-[var(--theme-color)] hover:brightness-110 py-3.5 rounded-xl text-white font-bold transition-all transform hover:-translate-y-0.5 shadow-lg flex justify-center items-center gap-2">
@@ -284,7 +284,7 @@ const changelog = [
   { version: 'v1.2.0', date: 'Marzo 2026', changes: ['Incrustado Panel Interactivo de "Vista Previa en Vivo". Ahora ves los enlaces funcionando antes de guardar y enviarlos a tu perfil de Discord.'] }
 ]
 
-const form = ref({ client_id: '1483974589141876927' })
+const form = ref({ client_id: '' })
 const toast = ref({ show: false, type: 'success', message: '' })
 
 function showToast(type, msg) {
