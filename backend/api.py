@@ -3,7 +3,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
 from rpc_manager import rpc_manager
+import time
 
+global_start_time = None
 app = FastAPI(title="Discord RPC Customizer API")
 
 app.add_middleware(
@@ -36,16 +38,23 @@ class UpdateRequest(BaseModel):
 
 @app.post("/api/connect")
 def connect_rpc(req: ConnectRequest):
+    global global_start_time
     success = rpc_manager.connect(req.client_id)
     if not success:
         raise HTTPException(status_code=400, detail="Fallo de conexión. ¿Discord está abierto?")
+    global_start_time = int(time.time())
     return {"status": "connected"}
 
 @app.post("/api/update")
 def update_rpc(req: UpdateRequest):
     if not rpc_manager.connected:
         raise HTTPException(status_code=400, detail="No estás conectado al RPC de Discord")
-    success = rpc_manager.update(**req.model_dump(exclude_none=True))
+        
+    data = req.model_dump(exclude_none=True)
+    if global_start_time:
+        data["start"] = global_start_time
+        
+    success = rpc_manager.update(**data)
     if not success:
         raise HTTPException(status_code=400, detail="Fallo al actualizar el RPC. Se perdió la conexión.")
     return {"status": "updated"}
