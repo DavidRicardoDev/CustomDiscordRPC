@@ -5,6 +5,13 @@ import os
 import sys
 import pystray
 from PIL import Image
+import socket
+
+try:
+    instance_lock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    instance_lock.bind(("127.0.0.1", 18493))
+except socket.error:
+    sys.exit(0)
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from api import app
@@ -62,7 +69,7 @@ if __name__ == '__main__':
     def setup_tray():
         global tray_icon
         menu = pystray.Menu(
-            pystray.MenuItem('Mostrar Panel', show_window),
+            pystray.MenuItem('Mostrar Panel', show_window, default=True),
             pystray.MenuItem('Cerrar App', quit_action)
         )
         icon_path = os.path.join(base_dir, 'backend', 'icon.ico')

@@ -134,15 +134,15 @@
                 </div>
               </div>
 
-              <div class="bg-[#1e1f22]/50 p-5 rounded-2xl border border-white/5 space-y-4 relative group">
+              <div class="bg-[#1e1f22]/50 p-5 rounded-2xl border border-white/5 space-y-4">
                 <h3 class="text-sm font-bold text-gray-300 border-b border-gray-700/50 pb-2">🖼️ Imagen Principal (Grande)</h3>
-                <div class="hidden group-hover:block absolute top-4 right-4 bg-[var(--theme-dark)] text-xs px-3 py-2 rounded shadow-xl max-w-xs z-20">
-                  ⚠️ El enlace debe terminar en <strong>.png, .jpg o .gif</strong> directamente. No servirá el enlace genérico de un post o sitio web.
-                </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  <div class="space-y-1.5">
+                  <div class="space-y-1.5 relative group">
                     <label class="block text-xs font-semibold text-gray-400 ml-1">Enlace directo a Imagen</label>
                     <input v-model="rpc.large_image" type="text" class="w-full bg-[#2b2d31] rounded-lg px-3.5 py-2.5 outline-none focus:ring-2 focus:ring-[var(--theme-color)] transition-all text-sm text-gray-200 placeholder-gray-600 border border-transparent focus:border-[var(--theme-color)]" placeholder="https://i.imgur.com/foto.png">
+                    <div class="hidden group-hover:block absolute bottom-full left-0 mb-1 bg-[#111214] border border-[#2b2d31] text-xs px-3 py-2 rounded shadow-2xl w-60 z-20 text-gray-200">
+                      ⚠️ Debe terminar en <strong>.png o .gif</strong>. URL directa obligatoria.
+                    </div>
                   </div>
                   <div class="space-y-1.5">
                     <label class="block text-xs font-semibold text-gray-400 ml-1">Texto al pasar el mouse</label>
@@ -151,12 +151,15 @@
                 </div>
               </div>
 
-              <div class="bg-[#1e1f22]/50 p-5 rounded-2xl border border-white/5 space-y-4 relative group">
+              <div class="bg-[#1e1f22]/50 p-5 rounded-2xl border border-white/5 space-y-4">
                 <h3 class="text-sm font-bold text-gray-300 border-b border-gray-700/50 pb-2">⭐ Imagen Secundaria (Pequeña)</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  <div class="space-y-1.5">
+                  <div class="space-y-1.5 relative group">
                     <label class="block text-xs font-semibold text-gray-400 ml-1">Enlace directo a Imagen</label>
                     <input v-model="rpc.small_image" type="text" class="w-full bg-[#2b2d31] rounded-lg px-3.5 py-2.5 outline-none focus:ring-2 focus:ring-[var(--theme-color)] transition-all text-sm text-gray-200 placeholder-gray-600 border border-transparent focus:border-[var(--theme-color)]" placeholder="https://i.imgur.com/icono.gif">
+                    <div class="hidden group-hover:block absolute bottom-full left-0 mb-1 bg-[#111214] border border-[#2b2d31] text-xs px-3 py-2 rounded shadow-2xl w-60 z-20 text-gray-200">
+                      ⚠️ Debe terminar en <strong>.png o .gif</strong>. URL directa obligatoria.
+                    </div>
                   </div>
                   <div class="space-y-1.5">
                     <label class="block text-xs font-semibold text-gray-400 ml-1">Texto al pasar el mouse</label>
@@ -278,8 +281,9 @@ const showGuideModal = ref(false)
 const showChangelogModal = ref(false)
 const minimizeToTray = ref(true)
 
-const currentVersion = 'v1.3.0'
+const currentVersion = 'v1.3.1'
 const changelog = [
+  { version: 'v1.3.1', date: 'Marzo 2026', changes: ['Mejorada la accesibilidad de la bandeja (Tray): Ahora basta con un solo Clic Izquierdo en el icono para invocar el panel principal.', 'Prevención de duplicidades: Cerrado en código un parche que impedía la acumulación de procesos .exe y Ghost Icons.', 'Mejora visual: Los avisos flotantes de las URIs ahora se limitan a su propia caja de texto exclusiva.'] },
   { version: 'v1.3.0', date: 'Marzo 2026', changes: ['Theming: Ahora puedes colorear e impregnar de tu tono favorito a toda la interfaz desde la paleta superior.', 'Integración total con iconos System-Tray: Ahora la aplicación puede minimizarse sin cerrarse por completo en PC.', 'Agregados hermosos spinners (indicadores de carga) al solicitar comandos de red.'] },
   { version: 'v1.2.0', date: 'Marzo 2026', changes: ['Incrustado Panel Interactivo de "Vista Previa en Vivo". Ahora ves los enlaces funcionando antes de guardar y enviarlos a tu perfil de Discord.'] }
 ]
