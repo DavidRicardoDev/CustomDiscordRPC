@@ -3,12 +3,14 @@
 Una aplicación minimalista de escritorio para que personalices tu Rich Presence de Discord a tu antojo. Hecha con **Python** de fondo y **Vue 3 + CSS Reactivo** de frente.
 ¡100% Código Abierto (Open Source)! Puedes revisar todo el código fuente y clonar el repositorio tú mismo; nuestra aplicación no lee tokens privados ni maneja datos sensibles, únicamente interactúa con tu ID pública de "Discord Developer".
 
-## Características de la v1.3.0
+## Características de la v1.4.0
 
+- 🗂️ **Sistema de Perfiles Predeterminados:** Guarda localmente infinitos estados y configuraciones de Discord en tu PC. Edítalos, personalízalos por nombre y elimínalos en lote.
+- 🔁 **Rotación Mágica de `Client ID`:** Si cargas un perfil que contiene un ID (Nombre de Aplicación) distinto, el motor te desconectará del viejo y ejecutará el *handshake* con la nueva App automáticamente en una fracción de segundo.
 - 🎨 **Theming Personalizado:** Elige el color que desees (RGB/HEX) mediante la paleta superior. El tema y luces cambiarán al instante en toda la aplicación.
-- 📉 **Segundo Plano (System Tray):** Minimiza la app al área del reloj de Windows en lugar de cerrarla.
+- 📉 **Segundo Plano (System Tray):** Minimiza la app al área del reloj de Windows en lugar de cerrarla. Se despierta con un solo *Left Click*.
 - ⏱️ **Tiempo Transcurrido:** Al conectarte, inicia un conteo visible ("00:00 elapsed") en Discord para saber tu tiempo de actividad continuo y real.
-- 🖼️ **Imágenes Livianas y Tooltips:** Visualiza tooltips estilo Discord y mantén la aplicación robusta; sin alojar nada pesadamente, todo mediante URLs externas directas (IMGUR, Discord Attachments, etc.).
+- 🖼️ **Imágenes Livianas y Tooltips:** Visualiza tooltips estilo Discord y mantén la aplicación robusta; sin alojar nada pesadamente, todo mediante URLs externas directas.
 
 ## Cómo usar el programa pre-compilado
 
@@ -37,6 +39,15 @@ Si deseas hacer modificaciones de la interfaz web (Vue) a profundidad:
 ---
 
 ## 📜 Historial de Versiones (Changelog)
+
+### v1.4.0
+- **Gran Sistema de Perfiles Predeterminados:** Dashboard integrado para crear, editar y cargar perfiles usando un almacenamiento nativo robusto `profiles.json`.
+- **Auto-Reconexión de IDs:** Cambio de Aplicación instantáneo al detectar la carga de un perfil con origen distinto.
+- Mejoras de accesibilidad: Auto-cerrado de ventanas al dar click afuera, *Single-Left-Click* en íconos de bandeja para despertar el panel.
+
+### v1.3.1
+- Restricción del sistema a 'Instancias Únicas' previniendo que la aplicación se duplique creando procesos fantasmas.
+- Mejoras visuales en las cajas de texto invisibles.
 
 ### v1.3.0
 - Integración de Theming Dinámico Interactivo (Colores modificables a profundidad por el usuario).
