@@ -4,6 +4,9 @@ from pydantic import BaseModel
 from typing import Optional
 from rpc_manager import rpc_manager
 import time
+import json
+import os
+import uuid
 
 global_start_time = None
 minimize_to_tray_setting = True
@@ -80,4 +83,69 @@ class SettingsRequest(BaseModel):
 def update_settings(req: SettingsRequest):
     global minimize_to_tray_setting
     minimize_to_tray_setting = req.minimize_to_tray
+    return {"status": "ok"}
+
+PROFILES_FILE = "profiles.json"
+
+def load_profiles():
+    if os.path.exists(PROFILES_FILE):
+        try:
+            with open(PROFILES_FILE, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            return []
+    return []
+
+def save_profiles(profiles):
+    with open(PROFILES_FILE, "w", encoding="utf-8") as f:
+        json.dump(profiles, f, ensure_ascii=False, indent=2)
+
+class ProfileData(BaseModel):
+    client_id: str
+    state: Optional[str] = ""
+    details: Optional[str] = ""
+    large_image: Optional[str] = ""
+    large_text: Optional[str] = ""
+    small_image: Optional[str] = ""
+    small_text: Optional[str] = ""
+
+class ProfileCreate(BaseModel):
+    name: str
+    data: ProfileData
+
+class ProfileUpdate(BaseModel):
+    name: str
+    data: ProfileData
+
+@app.get("/api/profiles")
+def get_profiles_api():
+    return load_profiles()
+
+@app.post("/api/profiles")
+def create_profile_api(req: ProfileCreate):
+    profiles = load_profiles()
+    new_prof = {"id": str(uuid.uuid4()), "name": req.name, "data": req.data.model_dump()}
+    profiles.append(new_prof)
+    save_profiles(profiles)
+    return new_prof
+
+@app.put("/api/profiles/{profile_id}")
+def update_profile_api(profile_id: str, req: ProfileUpdate):
+    profiles = load_profiles()
+    for p in profiles:
+        if p["id"] == profile_id:
+            p["name"] = req.name
+            p["data"] = req.data.model_dump()
+            save_profiles(profiles)
+            return p
+    raise HTTPException(status_code=404, detail="Perfil no encontrado")
+
+class DeleteProfilesReq(BaseModel):
+    ids: list[str]
+
+@app.post("/api/profiles/delete")
+def delete_profiles_api(req: DeleteProfilesReq):
+    profiles = load_profiles()
+    profiles = [p for p in profiles if p["id"] not in req.ids]
+    save_profiles(profiles)
     return {"status": "ok"}

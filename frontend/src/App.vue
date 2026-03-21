@@ -9,10 +9,10 @@
     </Transition>
 
     <Transition name="fade">
-      <div v-if="showGuideModal || showChangelogModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
-        <div class="bg-[#2b2d31] border border-white/10 rounded-2xl shadow-2xl max-w-lg w-full max-h-[85vh] overflow-y-auto relative">
+      <div v-if="showGuideModal || showChangelogModal || showProfilesModal" @click.self="showGuideModal=false; showChangelogModal=false; showProfilesModal=false" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
+        <div class="bg-[#2b2d31] border border-white/10 rounded-2xl shadow-xl shadow-black/50 max-w-2xl w-full max-h-[85vh] overflow-y-auto relative custom-scrollbar">
           
-          <button @click="showGuideModal=false; showChangelogModal=false" class="absolute top-4 right-4 text-gray-400 hover:text-white bg-white/5 hover:bg-white/10 p-2 rounded-xl transition-colors font-bold h-8 w-8 flex items-center justify-center">
+          <button @click="showGuideModal=false; showChangelogModal=false; showProfilesModal=false" class="absolute top-4 right-4 text-gray-400 hover:text-white bg-white/5 hover:bg-white/10 p-2 rounded-xl transition-colors font-bold h-8 w-8 flex items-center justify-center z-20">
             X
           </button>
 
@@ -52,7 +52,91 @@
             <div class="mt-8 bg-blue-500/10 border border-blue-500/20 rounded-xl p-4 flex gap-3 items-start">
               <span class="text-xl">💡</span>
               <p class="text-xs text-blue-200 leading-relaxed pt-1">
-                <strong>Actualizaciones:</strong> Por ahora, la aplicación debe descargarse manual desde GitHub para actualizar.
+                <strong>Actualizaciones:</strong> Para futuras versiones deberás descargar los lanzamientos usando GitHub manualmente.
+              </p>
+            </div>
+          </div>
+
+          <!-- Profiles Content -->
+          <div v-if="showProfilesModal" class="p-8">
+            <h2 class="text-2xl font-bold text-white mb-2 flex items-center justify-between">
+              <span class="flex items-center gap-3">🗂️ Mis Perfiles</span>
+              <button v-if="selectedProfiles.length > 0" @click="deleteSelected" class="text-xs bg-rose-500/20 text-rose-400 hover:bg-rose-500 hover:text-white px-3 py-1.5 rounded-lg font-bold transition-colors">
+                🗑️ Eliminar Seleccionados ({{ selectedProfiles.length }})
+              </button>
+            </h2>
+            <p class="text-xs text-gray-400 mb-6">Administra tus configuraciones guardadas. Carga una a la vista previa al instante.</p>
+            
+              <div class="bg-[#1e1f22] p-4 rounded-xl border border-white/5 mb-6 shadow-inner flex flex-col gap-3">
+                <div class="flex gap-3">
+                  <input v-model="profileFormName" type="text" placeholder="Nombre del nuevo perfil..." class="flex-1 bg-[#111214] border border-white/5 rounded-lg px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-[var(--theme-color)] text-white">
+                  <button @click="createProfile" class="bg-[var(--theme-color)] hover:brightness-110 px-4 py-2 rounded-lg text-white font-bold text-sm shadow-lg transition-transform hover:-translate-y-0.5 whitespace-nowrap">
+                    + Guardar Actual
+                  </button>
+                </div>
+                <div class="text-xs text-[var(--theme-light)] font-bold flex items-center justify-center gap-1">
+                  🌟 Tus perfiles vinculan tu "Client ID". Usa perfiles distintos para rotar instatáneamente el nombre global de la Aplicación si registraste múltiples nombres en el portal web de Discord.
+                </div>
+              </div>
+
+            <div v-if="profiles.length === 0" class="text-center py-8 text-gray-500 text-sm font-semibold border-2 border-dashed border-white/5 rounded-xl">
+              No tienes perfiles guardados. ¡Crea uno arriba usando tus datos actuales!
+            </div>
+            
+            <div class="space-y-3 max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar">
+              <div v-for="p in profiles" :key="p.id" class="bg-[#2b2d31] border border-white/5 rounded-xl p-4 transition-all hover:border-white/10 group">
+                
+                <div v-if="editingProfileId !== p.id">
+                  <div class="flex items-start justify-between">
+                    <div class="flex items-center gap-3">
+                      <input type="checkbox" :value="p.id" v-model="selectedProfiles" class="w-4 h-4 rounded text-[var(--theme-color)] bg-[#111214] border-white/10 focus:ring-0 cursor-pointer">
+                      <div>
+                        <h4 class="font-bold text-gray-200 text-md">{{ p.name }}</h4>
+                        <p class="text-xs text-gray-500 truncate max-w-[200px]">{{ p.data.state || 'Sin Estado' }} • {{ p.data.details || 'Sin Detalles' }}</p>
+                      </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-2">
+                      <button @click="editingProfileId = p.id; editForm = JSON.parse(JSON.stringify(p))" class="text-xs bg-white/5 hover:bg-white/10 text-gray-300 font-bold px-3 py-1.5 rounded-lg transition-colors">
+                        Editar
+                      </button>
+                      
+                      <div class="relative group/btn">
+                        <button @click="applyProfile(p)" class="text-xs bg-emerald-500/20 hover:bg-emerald-500 text-emerald-400 hover:text-white font-bold px-3 py-1.5 rounded-lg transition-colors shadow-lg">
+                          Cargar
+                        </button>
+                        <div class="hidden group-hover/btn:block absolute right-[110%] top-1/2 -translate-y-1/2 mr-2 bg-[#111214] border border-[#2b2d31] text-xs px-3 py-2 rounded shadow-2xl w-48 z-50 text-emerald-400 text-center pointer-events-none">
+                          Modificar los datos en la pantalla principal <strong>después de cargar</strong> no afectará a este perfil guardado.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div v-else class="space-y-3 animate-fade-in">
+                  <div class="flex justify-between items-center mb-2">
+                    <span class="text-xs font-bold text-[var(--theme-light)]">Editando Perfil</span>
+                    <button @click="editingProfileId = null" class="text-xs text-gray-400 hover:text-white">Cancelar</button>
+                  </div>
+                  <input v-model="editForm.name" type="text" class="w-full bg-[#111214] border border-white/5 rounded-lg px-3 py-2 text-sm outline-none text-white focus:ring-1 focus:ring-[var(--theme-color)] mb-2" placeholder="Nombre de este Perfil">
+                  <div class="grid grid-cols-2 gap-2">
+                    <input v-model="editForm.data.client_id" type="text" class="col-span-2 w-full bg-[#111214] border border-white/5 rounded-lg px-2 py-1.5 text-xs text-white" placeholder="Client ID (ID de la Aplicación en Discord)">
+                    <input v-model="editForm.data.details" type="text" class="w-full bg-[#111214] border border-white/5 rounded-lg px-2 py-1.5 text-xs text-white" placeholder="Detalles (Details)">
+                    <input v-model="editForm.data.state" type="text" class="w-full bg-[#111214] border border-white/5 rounded-lg px-2 py-1.5 text-xs text-white" placeholder="Estado (State)">
+                    <input v-model="editForm.data.large_image" type="text" class="w-full bg-[#111214] border border-white/5 rounded-lg px-2 py-1.5 text-xs text-white" title="Imagen Grande" placeholder="URL Img Grande">
+                    <input v-model="editForm.data.small_image" type="text" class="w-full bg-[#111214] border border-white/5 rounded-lg px-2 py-1.5 text-xs text-white" title="Imagen Pequeña" placeholder="URL Img Pequeña">
+                  </div>
+                  <button @click="saveEditToProfile(editForm)" class="w-full bg-[var(--theme-color)] hover:brightness-110 text-white font-bold text-xs py-2 rounded-lg mt-1 transition-all">
+                    Guardar Cambios
+                  </button>
+                </div>
+
+              </div>
+            </div>
+            <div class="mt-4 bg-[#111214] border border-white/5 rounded-xl p-3 flex gap-3 items-center">
+              <span class="text-lg">💡</span>
+              <p class="text-[11px] text-gray-400 leading-tight">
+                <strong>¿Sabías que?</strong> Tienes un botón verde de "Cargar" en el perfil deseado. Los datos se arrastrarán y redirigirán a tu pantalla principal para que verifiques en el "Live Preview" antes de enviarlos a Discord.
               </p>
             </div>
           </div>
@@ -71,11 +155,14 @@
           Presencia de discord personalizada
         </h1>
         
-        <div class="flex items-center justify-center gap-3 mb-8 text-xs font-semibold">
-          <label class="flex items-center gap-2 text-gray-400 bg-black/20 p-2 rounded-xl border border-white/5 cursor-pointer hover:bg-black/30 transition-colors">
+        <div class="flex flex-wrap items-center justify-center gap-3 mb-8 text-xs font-semibold">
+          <label class="flex items-center gap-2 text-gray-400 bg-black/20 px-3 py-2 rounded-xl border border-white/5 cursor-pointer hover:bg-black/30 transition-colors">
             🎨 Color de Tema
             <input type="color" v-model="userColor" class="w-6 h-6 rounded cursor-pointer border-none p-0 bg-transparent">
           </label>
+          <button @click="showProfilesModal = true; fetchProfiles()" class="flex items-center gap-2 text-gray-400 bg-black/20 px-4 py-2 rounded-xl border border-white/5 cursor-pointer hover:text-white hover:bg-black/40 transition-colors">
+            🗂️ Mis Perfiles
+          </button>
         </div>
 
         <div v-if="!connected" class="space-y-6 max-w-sm mx-auto mt-4 animate-fade-in">
@@ -279,10 +366,18 @@ const connected = ref(false)
 const isLoading = ref(false)
 const showGuideModal = ref(false)
 const showChangelogModal = ref(false)
+const showProfilesModal = ref(false)
 const minimizeToTray = ref(true)
 
-const currentVersion = 'v1.3.1'
+const profiles = ref([])
+const selectedProfiles = ref([])
+const profileFormName = ref('')
+const editingProfileId = ref(null)
+const editForm = ref({})
+
+const currentVersion = 'v1.4.0'
 const changelog = [
+  { version: 'v1.4.0', date: 'Marzo 2026', changes: ['Súper Sistema de Perfiles Predeterminados: Ahora puedes crear, editar, eliminar y cargar infinitos perfiles con tus configuraciones favoritas. Se guardan perpetuamente localmente en profiles.json gracias al servidor integrado FastAPI.'] },
   { version: 'v1.3.1', date: 'Marzo 2026', changes: ['Mejorada la accesibilidad de la bandeja (Tray): Ahora basta con un solo Clic Izquierdo en el icono para invocar el panel principal.', 'Prevención de duplicidades: Cerrado en código un parche que impedía la acumulación de procesos .exe y Ghost Icons.', 'Mejora visual: Los avisos flotantes de las URIs ahora se limitan a su propia caja de texto exclusiva.'] },
   { version: 'v1.3.0', date: 'Marzo 2026', changes: ['Theming: Ahora puedes colorear e impregnar de tu tono favorito a toda la interfaz desde la paleta superior.', 'Integración total con iconos System-Tray: Ahora la aplicación puede minimizarse sin cerrarse por completo en PC.', 'Agregados hermosos spinners (indicadores de carga) al solicitar comandos de red.'] },
   { version: 'v1.2.0', date: 'Marzo 2026', changes: ['Incrustado Panel Interactivo de "Vista Previa en Vivo". Ahora ves los enlaces funcionando antes de guardar y enviarlos a tu perfil de Discord.'] }
@@ -301,6 +396,95 @@ const rpc = ref({
 })
 
 const apiBase = 'http://127.0.0.1:8000/api'
+
+async function fetchProfiles() {
+  try {
+    const res = await fetch(`${apiBase}/profiles`)
+    if(res.ok) profiles.value = await res.json()
+  } catch(e) {}
+}
+
+async function createProfile() {
+  if(!profileFormName.value.trim()) return showToast('error', 'El nombre no puede estar vacío')
+  const data = {
+    client_id: form.value.client_id,
+    ...rpc.value
+  }
+  try {
+    const res = await fetch(`${apiBase}/profiles`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: profileFormName.value, data })
+    })
+    if (res.ok) {
+      profileFormName.value = ''
+      fetchProfiles()
+      showToast('success', 'Perfil guardado permanentemente')
+    } else {
+      showToast('error', 'Error al crear perfil')
+    }
+  } catch(e) { }
+}
+
+async function applyProfile(p) {
+  const previousId = form.value.client_id;
+  const newId = p.data.client_id || '';
+  
+  form.value.client_id = newId;
+  rpc.value.state = p.data.state || '';
+  rpc.value.details = p.data.details || '';
+  rpc.value.large_image = p.data.large_image || '';
+  rpc.value.large_text = p.data.large_text || '';
+  rpc.value.small_image = p.data.small_image || '';
+  rpc.value.small_text = p.data.small_text || '';
+  
+  showProfilesModal.value = false;
+  
+  if (connected.value && previousId !== newId && newId !== '') {
+    showToast('success', 'Cambio de App Detectado. Reconectando...');
+    await disconnect();
+    await connect();
+    showToast('success', 'Nueva App Vinculada. Presiona "Actualizar" cuando estés listo.');
+  } else {
+    showToast('success', 'Perfil invocado a Vista Previa. ¡Pulsa Actualizar!');
+  }
+}
+
+async function deleteSelected() {
+  if (!selectedProfiles.value.length) return
+  if(isLoading.value) return;
+  isLoading.value = true
+  try {
+    const res = await fetch(`${apiBase}/profiles/delete`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ids: selectedProfiles.value })
+    })
+    if (res.ok) {
+      selectedProfiles.value = []
+      fetchProfiles()
+      showToast('success', 'Perfiles borrados del disco')
+    }
+  } catch(e) {}
+  isLoading.value = false
+}
+
+async function saveEditToProfile(editedP) {
+  isLoading.value = true
+  try {
+    const res = await fetch(`${apiBase}/profiles/${editedP.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: editedP.name, data: editedP.data })
+    })
+    if (res.ok) {
+      editingProfileId.value = null
+      fetchProfiles()
+      showToast('success', 'Edición Guardada con éxito')
+    }
+  } catch(e) {}
+  isLoading.value = false
+}
 
 async function connect() {
   isLoading.value = true
@@ -389,4 +573,8 @@ onMounted(async () => {
 .toast-enter-from, .toast-leave-to { opacity: 0; transform: translate(-50%, -30px); }
 .fade-enter-active, .fade-leave-active { transition: opacity 0.3s ease; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }
+.custom-scrollbar::-webkit-scrollbar { width: 8px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: #1e1f22; border-radius: 8px; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #4f545c; border-radius: 8px; }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--theme-color); }
 </style>

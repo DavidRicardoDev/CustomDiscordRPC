@@ -1,0 +1,28 @@
+[
+  {
+    "id": "17e759c6-93d8-4765-b288-03296356722b",
+    "name": "Arcaea",
+    "data": {
+      "client_id": "1485010377778401515",
+      "state": "Ptt: 12.48 ☆",
+      "details": "In the song selection menu...",
+      "large_image": "https://i.imgur.com/KMal1Ek.png",
+      "large_text": "",
+      "small_image": "",
+      "small_text": ""
+    }
+  },
+  {
+    "id": "f3c90066-b420-4467-aa36-6a6e82161024",
+    "name": "Parchao",
+    "data": {
+      "client_id": "1483974589141876927",
+      "state": "",
+      "details": "Sabado de no hacer nada",
+      "large_image": "https://i.imgur.com/V5a9iNq.gif",
+      "large_text": "",
+      "small_image": "",
+      "small_text": ""
+    }
+  }
+]
